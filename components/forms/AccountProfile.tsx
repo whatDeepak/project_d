@@ -6,6 +6,8 @@ import { useForm } from "react-hook-form";
 import { ChangeEvent, useState } from "react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { UserValidation } from "@/lib/validations/user";
+import { updateUser } from "@/lib/actions/user.actions";
+import { usePathname, useRouter } from "next/navigation";
 
 import { Button } from "@/components/ui/button"
 import {
@@ -38,6 +40,9 @@ interface Props {
 
 const AccountProfile= ({ user, btnTitle }: Props) => {
     const { startUpload } = useUploadThing("media");
+
+    const router = useRouter();
+    const pathname = usePathname();
 
     const [files, setFiles] = useState<File[]>([]);
 
@@ -87,8 +92,21 @@ const AccountProfile= ({ user, btnTitle }: Props) => {
           }
         }
     
-        //TODO: Update User Profile
-      };
+        await updateUser({
+            name: values.name,
+            path: pathname,
+            username: values.username,
+            userId: user.id,
+            bio: values.bio,
+            image: values.profile_photo,
+        });
+      
+        if (pathname === "/profile/edit") {
+            router.back();
+        } else {
+            router.push("/");
+        }
+    };
 
     return(
         <Form {...form}>
