@@ -8,7 +8,7 @@ import Comment from "@/components/forms/Comment";
 
 const Page = async({ params }: { params: { id: string}}) =>{
     if (!params.id) return null;
-
+    console.log(params.id);
     const user = await currentUser();
     if (!user) return null;
 
